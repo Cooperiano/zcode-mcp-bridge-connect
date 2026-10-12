@@ -132,7 +132,7 @@ class PiRpcTest(unittest.TestCase):
                 "thoughtLevel": "max",
                 "toolAllowlist": ["read", "grep"],
                 "toolDenylist": ["bash"],
-                "resources": [{"key": "/tmp/output", "mode": "exclusive"}],
+                "resources": [{"key": os.path.realpath("/tmp/output"), "mode": "exclusive"}],
             },
             lambda _event: None,
             lambda _message: None,

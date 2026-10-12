@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import os
 import threading
 import time
 import unittest
@@ -346,7 +347,7 @@ class ControlPlaneTest(unittest.TestCase):
             "implement",
             "scope-policy",
             mode="build",
-            resources=[{"key": "/tmp/scope-output", "mode": "exclusive"}],
+            resources=[{"key": os.path.realpath("/tmp/scope-output"), "mode": "exclusive"}],
         )
         session_id = self.session(run["runId"])
         inside = self.protocol.on_server_request(
@@ -396,7 +397,7 @@ class ControlPlaneTest(unittest.TestCase):
     def test_shared_nested_resource_is_read_only_under_exclusive_workspace(self):
         run = self.start(
             "implement", "exclusive-parent", mode="build",
-            resources=[{"key": "/tmp/exclusive-parent/shared", "mode": "shared"}],
+            resources=[{"key": os.path.realpath("/tmp/exclusive-parent/shared"), "mode": "shared"}],
         )
         session_id = self.session(run["runId"])
         parent = self.protocol.on_server_request(

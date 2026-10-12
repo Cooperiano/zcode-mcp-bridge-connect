@@ -22,11 +22,26 @@ def _pid_is_alive(pid):
     if os.name == "nt":
         try:
             import ctypes
-            handle = ctypes.windll.kernel32.OpenProcess(0x1000, False, pid)
+            from ctypes import wintypes
+            kernel32 = ctypes.WinDLL("kernel32", use_last_error=True)
+            kernel32.OpenProcess.argtypes = [wintypes.DWORD, wintypes.BOOL, wintypes.DWORD]
+            kernel32.OpenProcess.restype = wintypes.HANDLE
+            kernel32.GetExitCodeProcess.argtypes = [wintypes.HANDLE, ctypes.POINTER(wintypes.DWORD)]
+            kernel32.GetExitCodeProcess.restype = wintypes.BOOL
+            kernel32.CloseHandle.argtypes = [wintypes.HANDLE]
+            kernel32.CloseHandle.restype = wintypes.BOOL
+            handle = kernel32.OpenProcess(0x1000, False, pid)
             if not handle:
-                return False
-            ctypes.windll.kernel32.CloseHandle(handle)
-            return True
+                # Only an invalid PID proves absence; access-denied/unknown
+                # results must not reclaim another still-active task's lease.
+                return ctypes.get_last_error() != 87
+            try:
+                exit_code = wintypes.DWORD()
+                if not kernel32.GetExitCodeProcess(handle, ctypes.byref(exit_code)):
+                    return True
+                return exit_code.value == 259  # STILL_ACTIVE
+            finally:
+                kernel32.CloseHandle(handle)
         except (AttributeError, OSError):
             return True
     try:
