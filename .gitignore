@@ -1,0 +1,37 @@
+# Python
+__pycache__/
+*.py[cod]
+
+# Local backups / runtime artifacts
+*.bak
+*.log
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
+benchmark-results/
+
+# Local credentials
+.env
+.env.*
+!.env.example
+model-deployments.json
+
+# Private device state and extracted native app material
+.backups/
+.bridge-runtime/
+runtime/
+sessions/
+secrets/
+.secrets/
+credentials.json
+service-account.json
+*.db
+*.pem
+*.key
+*.p12
+*.pfx
+*.map
+
+connection-report.json
+SANITIZATION_REPORT.md
+FORK_REPORT.md

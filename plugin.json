@@ -1,0 +1,19 @@
+{
+  "name": "coder-mcp-bridge",
+  "version": "0.1.0",
+  "description": "ZCode stdio MCP connection compatibility distribution, derived from coder-mcp-bridge.",
+  "license": "MIT",
+  "mcpServers": {
+    "vibe_bridge": {
+      "type": "stdio",
+      "command": "python3",
+      "args": [
+        "${ZCODE_PLUGIN_ROOT}/server.py"
+      ],
+      "env": {
+        "AGENT_MCP_TIMEOUT": "900",
+        "AGENT_MCP_DEFAULT_BACKEND": "zcode"
+      }
+    }
+  }
+}
